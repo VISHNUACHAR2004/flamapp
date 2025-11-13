@@ -17,9 +17,17 @@ import androidx.core.content.ContextCompat
 import java.nio.ByteBuffer
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        init {
+            System.loadLibrary("native-lib")
+        }
+    }
+
 
     // JNI function
     external fun processFrame(data: ByteArray, width: Int, height: Int)
+    private external fun testOpenCV(): String
+
 
     // Proper Kotlin initializer block
     init {
@@ -34,6 +42,10 @@ class MainActivity : AppCompatActivity() {
     private val CAMERA_PERMISSION_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val msg = testOpenCV().also {
+            println(it)
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

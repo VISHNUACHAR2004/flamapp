@@ -1,24 +1,28 @@
 cmake_minimum_required(VERSION 3.10.2)
+project("edgedetectionapp")
 
-project("flamapp")
+# OpenCV include directory
+include_directories(
+        ${CMAKE_SOURCE_DIR}/opencv/include
+)
 
-# ----------- OpenCV -------------
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/../../opencv/native/jni)
-find_package(OpenCV REQUIRED)
-
-# ----------- Native Library -----
+# Add native-lib.cpp
 add_library(
         native-lib
         SHARED
-        native-lib.cpp)
+        native-lib.cpp
+)
+
+# Link all OpenCV .so files in jniLibs
+add_library( opencv_java4 SHARED IMPORTED )
+set_target_properties( opencv_java4 PROPERTIES IMPORTED_LOCATION
+        ${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libopencv_java4.so )
 
 find_library(
         log-lib
         log)
 
-# ----------- Link Libraries -----
 target_link_libraries(
         native-lib
-        ${log-lib}
-        ${OpenCV_LIBS}
-)
+        opencv_java4
+        ${log-lib})
