@@ -1,13 +1,10 @@
 #include <jni.h>
-#include <string>
+#include <opencv2/opencv.hpp>
+#include <android/log.h>
 
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_example_myapp_MainActivity_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    return env->NewStringUTF("NDK is working!");
-}
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "JNI_OPENCV", __VA_ARGS__);
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "JNI_OPENCV", __VA_ARGS__);
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_edgedetectionapp_MainActivity_processFrame(
@@ -17,12 +14,20 @@ Java_com_example_edgedetectionapp_MainActivity_processFrame(
         jint width,
         jint height
 ) {
-    // For now, just verify JNI is working
-    jbyte* bytes = env->GetByteArrayElements(data, nullptr);
+    // 1. Get pointer to Java ByteArray
+    jbyte* bytePtr = env->GetByteArrayElements(data, nullptr);
+    unsigned char* frameData = reinterpret_cast<unsigned char*>(bytePtr);
 
-    // IMPORTANT: Later we will convert ByteArray → cv::Mat here.
-    // For now we do nothing.
+    // 2. Wrap into cv::Mat (ARGB_8888 from Bitmap)
+    cv::Mat argb(height, width, CV_8UC4, frameData);
 
-    env->ReleaseByteArrayElements(data, bytes, 0);
+    // 3. Convert ARGB → BGRA (OpenCV friendly)
+    cv::Mat bgra;
+    cv::cvtColor(argb, bgra, cv::COLOR_RGBA2BGRA);
+
+    // (Temporary test – just log)
+    LOGI("Frame received and converted to cv::Mat: %dx%d", bgra.cols, bgra.rows);
+
+    // 4. Release buffer
+    env->ReleaseByteArrayElements(data, bytePtr, JNI_ABORT);
 }
-
