@@ -6,9 +6,8 @@ plugins {
 
 android {
     namespace = "com.example.edgedetectionapp"
-    compileSdk = 34
+    compileSdk = 35
 
-    // NDK + CMake support
     ndkVersion = "25.2.9519653"
 
     externalNativeBuild {
@@ -20,7 +19,7 @@ android {
     defaultConfig {
         applicationId = "com.example.edgedetectionapp"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -58,6 +57,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.appcompat:appcompat:1.7.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
