@@ -15,8 +15,10 @@ add_library(
 
 # Link all OpenCV .so files in jniLibs
 add_library( opencv_java4 SHARED IMPORTED )
-set_target_properties( opencv_java4 PROPERTIES IMPORTED_LOCATION
-        ${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libopencv_java4.so )
+set_target_properties(opencv_java4 PROPERTIES
+        IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../jniLibs/arm64-v8a/libopencv_java4.so
+)
+
 
 find_library(
         log-lib
